@@ -1,6 +1,7 @@
 import React from "react";
 import CashEntry from "./CashEntry/CashEntry";
 import NewCashEntry from "./NewCashEntry/NewCashEntry";
+import classes from "./CashPanel.module.css";
 
 const cashPanel = (props) => {
 
@@ -12,12 +13,9 @@ const cashPanel = (props) => {
             return <CashEntry name={item.name} value={item.value}/>
         })
     }
-    return (<div>
+    return (<div className={classes.CashPanel}>
         {entries}
-        <NewCashEntry inputChanged={props.inputChanged} clicked={props.addCashEntryHandler} newCashItem={props.newCashItem}/>
-        <p>Total Cash Value: {props.totalCash}</p>
-        <button onClick={props.calculateTotalHandler}>Calculate Total</button>
-        
+        <NewCashEntry inputChanged={props.inputChanged} clicked={props.addCashEntryHandler} newCashItem={props.newCashItem}/>        
     </div>);
 }
 

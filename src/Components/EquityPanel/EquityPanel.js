@@ -3,6 +3,7 @@
 import React from "react";
 import EquityEntry from "./EquityEntry/EquityEntry";
 import NewEquityEntry from "./NewEquityEntry/NewEquityEntry";
+import classes from "./EquityPanel.module.css";
 
 const equityPanel = (props) => {
     //  equityEntries
@@ -12,7 +13,7 @@ const equityPanel = (props) => {
             return <EquityEntry equityItem={item} />
         })
     }
-    return (<div>
+    return (<div className={classes.EquityPanel}>
         {entries}
         <NewEquityEntry equityInputChangeHandler={props.inputChangeHandler}
             clicked={props.clicked}

@@ -3,6 +3,8 @@ import React, { Component } from "react";
 import CashPanel from "../../Components/CashPanel/CashPanel";
 import EquityPanel from "../../Components/EquityPanel/EquityPanel";
 import OverviewPanel from "../../Components/OverviewPanel/OverviewPanel";
+import DoughnutGraph from "../../Components/DoghnutGraph/DoughnutGraph"
+import classes from "./NetWorthCalculator.module.css"
 
 class NetWorthCalculator extends Component {
     state = {
@@ -21,7 +23,11 @@ class NetWorthCalculator extends Component {
             totalValue: "",
         },
         totalEquityValue: 0,
-        totalValue: 0
+        totalValue: 0,
+        // TODO: add items to these lists when the calculate button is hit
+        cashDoughnut: [{name: "TSLA", value: 560},{ name: "AAPL", value: 123}],
+        equityDoughnut: [],
+        totalDoughnut: []
     }
 
     // onInputChange -> function that updates newCashItem state
@@ -69,7 +75,7 @@ class NetWorthCalculator extends Component {
                 const totalValue = stockPrice * quantity;
                 this.setState(prevState => {
                     return {
-                        equityItems: [...prevState.equityItems, { ticker, quantity, stockPrice, totalValue }],
+                        equityItems: [...prevState.equityItems, { ticker: ticker.toUpperCase(), quantity, stockPrice, totalValue }],
                         newEquityItem: {
                             ticker: "",
                             quantity: "",
@@ -98,33 +104,38 @@ class NetWorthCalculator extends Component {
         }).reduce((prevVal, currentVal) => {
             return prevVal + currentVal
         }, 0).toFixed(2);
-        this.setState({totalEquityValue: totalEquityValue});
-        this.setState({totalValue: parseFloat(totalCashValue) + parseFloat(totalEquityValue)});
+        this.setState({ totalEquityValue: totalEquityValue });
+        this.setState({ totalValue: parseFloat(totalCashValue) + parseFloat(totalEquityValue) });
     }
 
 
 
     render() {
         return (<div>
-            <OverviewPanel cashValue={this.state.totalCashValue}
-                equityValue={this.state.totalEquityValue}
-                totalValue={this.state.totalValue}
-            />
+            <div>
+                <DoughnutGraph datalist={this.state.cashDoughnut} title="Cash Items"/>
+                <OverviewPanel cashValue={this.state.totalCashValue}
+                    equityValue={this.state.totalEquityValue}
+                    totalValue={this.state.totalValue}
+                />
 
-            <CashPanel addCashEntryHandler={this.addCashEntryHandler}
-                cashItems={this.state.cashItems}
-                inputChanged={this.onCashInputChange}
-                newCashItem={this.state.newCashItem}
-                totalCash={this.state.totalCashValue}
-            />
+                <div className={classes.nwContainer}>
+                    <CashPanel addCashEntryHandler={this.addCashEntryHandler}
+                        cashItems={this.state.cashItems}
+                        inputChanged={this.onCashInputChange}
+                        newCashItem={this.state.newCashItem}
+                        totalCash={this.state.totalCashValue}
+                    />
 
-            <EquityPanel
-                equityItems={this.state.equityItems}
-                inputChangeHandler={this.onEquityInputChange}
-                newEquityItem={this.state.newEquityItem}
-                clicked={this.addEquityEntryhandler}
-            />
-            <button onClick={this.calculateTotalHandler}>Calculate Net Worth</button>
+                    <EquityPanel
+                        equityItems={this.state.equityItems}
+                        inputChangeHandler={this.onEquityInputChange}
+                        newEquityItem={this.state.newEquityItem}
+                        clicked={this.addEquityEntryhandler}
+                    />
+                </div>
+            </div>
+            <button className={classes.calculateBtn} onClick={this.calculateTotalHandler}>Calculate Net Worth</button>
         </div>);
     }
 }

@@ -1,7 +1,8 @@
 import React from "react";
+import classes from "./EquityEntry.module.css";
 // display one equity entry item
 const equityEntry = (props) => {
-    return (<div >
+    return (<div className={classes.EquityEntry}>
         <p>{props.equityItem.ticker}</p>
         <p>{props.equityItem.quantity}</p>
         <p>{props.equityItem.stockPrice}</p>

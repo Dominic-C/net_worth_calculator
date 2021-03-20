@@ -45,7 +45,7 @@ const doughnutGraph = (props) => {
                                 display:true,
                                 position:'right'
                                 },
-                                maintainAspectRatio: false
+                                maintainAspectRatio: true
                             }}
                             />
                     <p>{props.description}: ${props.displayVal}</p>

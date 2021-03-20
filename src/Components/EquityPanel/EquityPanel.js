@@ -1,7 +1,6 @@
 // TODO: reference cashPanel
 // create handlers in NetWorthCalc
 import React from "react";
-import EquityEntry from "./EquityEntry/EquityEntry";
 import NewEquityEntry from "./NewEquityEntry/NewEquityEntry";
 import classes from "./EquityPanel.module.css";
 
@@ -9,13 +8,39 @@ const equityPanel = (props) => {
     //  equityEntries
     let entries = null;
     if (props.equityItems && props.equityItems.length > 0) {
-        entries = props.equityItems.map(item => {
-            return <EquityEntry equityItem={item} />
+        entries = props.equityItems.map((item, index) => {
+            // return <EquityEntry equityItem={item} />
+            return (
+                <tr key={index}>
+                    <td>{item.ticker}</td>
+                    <td>{item.quantity}</td>
+                    <td>{item.stockPrice}</td>
+                    <td>{item.totalValue}</td> 
+                    <td>{(item.totalValue * 1.35).toFixed(2)}</td> 
+                </tr>
+            );
         })
     }
     return (<div className={classes.EquityPanel}>
         <p className={classes.description}>{props.description}</p>
-        {entries}
+        {props.equityItems.length > 0 
+            ?
+            <table className={classes.equityTable}>
+                <thead>
+                    <tr>
+                        <td>Ticker</td>
+                        <td>Quantity</td>
+                        <td>Stock Price (USD)</td>
+                        <td>Value (USD)</td>
+                        <td>Value (SGD)</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {entries}
+                </tbody>
+            </table>
+            : null
+        }
         <NewEquityEntry equityInputChangeHandler={props.inputChangeHandler}
             clicked={props.clicked}
             newEquityItem={props.newEquityItem}

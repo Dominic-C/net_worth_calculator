@@ -72,7 +72,7 @@ class NetWorthCalculator extends Component {
             .then(response => {
                 // console.log(response);
                 const stockPrice = parseFloat(response.data[0].price).toFixed(2);
-                const totalValue = stockPrice * quantity;
+                const totalValue = parseFloat(stockPrice * quantity).toFixed(2);
                 this.setState(prevState => {
                     return {
                         equityItems: [...prevState.equityItems, { ticker: ticker.toUpperCase(), quantity, stockPrice, totalValue }],
@@ -90,22 +90,24 @@ class NetWorthCalculator extends Component {
     calculateTotalHandler = () => {
         // calculate cash value
         const allCashItems = this.state.cashItems;
-        const totalCashValue = allCashItems.map(item => {
+        const totalCashValue = parseFloat(allCashItems.map(item => {
             return parseFloat(item.value);
         }).reduce((prevValue, currentValue) => {
             return currentValue + prevValue
-        }, 0).toFixed(2);
+        }, 0)).toFixed(2);
         this.setState({ totalCashValue: totalCashValue });
 
         // calculate equity value
         const allEquityItems = this.state.equityItems;
-        const totalEquityValue = allEquityItems.map(item => {
-            return item.totalValue
+        let totalEquityValue = parseFloat(allEquityItems.map(item => {
+            return parseFloat(item.totalValue)
         }).reduce((prevVal, currentVal) => {
             return prevVal + currentVal
-        }, 0).toFixed(2);
+        }, 0)).toFixed(2);
+
+        totalEquityValue = totalEquityValue * 1.35;
         this.setState({ totalEquityValue: totalEquityValue });
-        this.setState({ totalValue: parseFloat(totalCashValue) + parseFloat(totalEquityValue) });
+        this.setState({ totalValue: (parseFloat(totalCashValue) + parseFloat(totalEquityValue)).toFixed(2) });
     
         // setting doughnut graph values
         this.setState({totalDoughnut: [{name: "Cash", value: totalCashValue},{name: "Equities", value: totalEquityValue}]});

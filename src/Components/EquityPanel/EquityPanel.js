@@ -14,6 +14,7 @@ const equityPanel = (props) => {
         })
     }
     return (<div className={classes.EquityPanel}>
+        <p className={classes.description}>{props.description}</p>
         {entries}
         <NewEquityEntry equityInputChangeHandler={props.inputChangeHandler}
             clicked={props.clicked}

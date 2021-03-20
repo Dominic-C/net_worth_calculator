@@ -25,7 +25,7 @@ class NetWorthCalculator extends Component {
         totalEquityValue: 0,
         totalValue: 0,
         // TODO: add items to these lists when the calculate button is hit
-        cashDoughnut: [{name: "TSLA", value: 560},{ name: "AAPL", value: 123}],
+        cashDoughnut: [],
         equityDoughnut: [],
         totalDoughnut: []
     }
@@ -106,6 +106,11 @@ class NetWorthCalculator extends Component {
         }, 0).toFixed(2);
         this.setState({ totalEquityValue: totalEquityValue });
         this.setState({ totalValue: parseFloat(totalCashValue) + parseFloat(totalEquityValue) });
+    
+        // setting doughnut graph values
+        this.setState({totalDoughnut: [{name: "Cash", value: totalCashValue},{name: "Equities", value: totalEquityValue}]});
+        this.setState({cashDoughnut: allCashItems});
+        this.setState({equityDoughnut: allEquityItems.map(equityItem => ({name: equityItem.ticker, value: equityItem.totalValue}))});
     }
 
 
@@ -113,14 +118,26 @@ class NetWorthCalculator extends Component {
     render() {
         return (<div>
             <div>
-                <DoughnutGraph datalist={this.state.cashDoughnut} title="Cash Items"/>
-                <OverviewPanel cashValue={this.state.totalCashValue}
-                    equityValue={this.state.totalEquityValue}
-                    totalValue={this.state.totalValue}
-                />
+                <DoughnutGraph 
+                    datalist={this.state.totalDoughnut}
+                    displayVal={this.state.totalValue}
+                    description="Total Net Worth"
+                    title="Overview"/>
+                <DoughnutGraph 
+                    datalist={this.state.cashDoughnut}
+                    displayVal={this.state.totalCashValue}
+                    description="Total Cash Value"
+                    title="Cash Items"/>
+                <DoughnutGraph
+                    datalist={this.state.equityDoughnut}
+                    displayVal={this.state.totalEquityValue}
+                    description="Total Equity Value"
+                    title="Equity Items"/>
 
                 <div className={classes.nwContainer}>
-                    <CashPanel addCashEntryHandler={this.addCashEntryHandler}
+                    <CashPanel
+                        description="Cash Items"
+                        addCashEntryHandler={this.addCashEntryHandler}
                         cashItems={this.state.cashItems}
                         inputChanged={this.onCashInputChange}
                         newCashItem={this.state.newCashItem}
@@ -128,6 +145,7 @@ class NetWorthCalculator extends Component {
                     />
 
                     <EquityPanel
+                        description="Equity Items"
                         equityItems={this.state.equityItems}
                         inputChangeHandler={this.onEquityInputChange}
                         newEquityItem={this.state.newEquityItem}

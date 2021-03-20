@@ -14,6 +14,7 @@ const cashPanel = (props) => {
         })
     }
     return (<div className={classes.CashPanel}>
+        <p className={classes.description}>{props.description}</p>
         {entries}
         <NewCashEntry inputChanged={props.inputChanged} clicked={props.addCashEntryHandler} newCashItem={props.newCashItem}/>        
     </div>);

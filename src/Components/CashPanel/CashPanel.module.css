@@ -5,3 +5,10 @@
     margin: 10px;
     border-radius: 15px;
 }
+
+
+.description {
+    margin-top: 0;
+    font-size: 20px;
+    font-weight: 500;
+}

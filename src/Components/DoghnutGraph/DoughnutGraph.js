@@ -1,5 +1,6 @@
 import React from "react";
 import {Doughnut} from 'react-chartjs-2';
+import classes from "./DoughnutGraph.module.css";
 
 // takes in labels and data as props
 // [{name, value}]
@@ -12,24 +13,24 @@ const doughnutGraph = (props) => {
                 {
                     label: props.title,
                     backgroundColor: [
-                        '#B21F00',
-                        '#C9DE00',
-                        '#2FDE00',
-                        '#00A6B4',
-                        '#6800B4'
+                        '#9580ff',
+                        '#d580ff',
+                        '#ff80ea',
+                        '#ff80ab',
+                        '#ff9580'
                       ],
                       hoverBackgroundColor: [
-                      '#501800',
-                      '#4B5000',
-                      '#175000',
-                      '#003350',
-                      '#35014F'
+                      '#785dff',
+                      '#c95dff',
+                      '#ff5de4',
+                      '#ff5d93',
+                      '#ff785d'
                       ],
                     data: values
                 }
             ]
         }
-        return (<div>
+        return (<div className={classes.DoughnutContainer}>
                     <Doughnut
                             data={data}
                             width={300}
@@ -47,6 +48,7 @@ const doughnutGraph = (props) => {
                                 maintainAspectRatio: false
                             }}
                             />
+                    <p>{props.description}: ${props.displayVal}</p>
         </div>);
 }
 

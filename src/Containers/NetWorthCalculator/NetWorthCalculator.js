@@ -2,12 +2,13 @@ import axios from "axios"
 import React, { Component } from "react";
 import CashPanel from "../../Components/CashPanel/CashPanel";
 import EquityPanel from "../../Components/EquityPanel/EquityPanel";
-import OverviewPanel from "../../Components/OverviewPanel/OverviewPanel";
-import DoughnutGraph from "../../Components/DoghnutGraph/DoughnutGraph"
-import classes from "./NetWorthCalculator.module.css"
+import DoughnutGraph from "../../Components/DoghnutGraph/DoughnutGraph";
+import Auxiliary from "../../hoc/Auxiliary/Auxiliary"
+import classes from "./NetWorthCalculator.module.css";
 
 class NetWorthCalculator extends Component {
     state = {
+        // states for cash items
         cashItems: [],
         newCashItem: {
             name: "",
@@ -15,6 +16,7 @@ class NetWorthCalculator extends Component {
         },
         totalCashValue: 0,
 
+        // states for equity items
         equityItems: [],
         newEquityItem: {
             ticker: "",
@@ -23,11 +25,18 @@ class NetWorthCalculator extends Component {
             totalValue: "",
         },
         totalEquityValue: 0,
+
+        // state for net worth calculation
         totalValue: 0,
-        // TODO: add items to these lists when the calculate button is hit
+
+        // states for plotting doughnut graphs
         cashDoughnut: [],
         equityDoughnut: [],
-        totalDoughnut: []
+        totalDoughnut: [],
+
+        // state for ticker search
+        searchSuggestions: []
+
     }
 
     // onInputChange -> function that updates newCashItem state
@@ -40,6 +49,17 @@ class NetWorthCalculator extends Component {
 
     onEquityInputChange = (event) => {
         const { name, value } = event.target;
+        // run axios -> get top 5 results -> set new equity item -> set top 5 results in a state. element that displays top 5 results when input is not empty.
+        if (name === "ticker") {
+            axios.get(`https://financialmodelingprep.com/api/v3/search-ticker?query=${value.toUpperCase()}&limit=5&apikey=${process.env.REACT_APP_FMP_API_KEY}`).then(response => {
+                console.log(response);
+                if (response.data.length !== 0) {
+                    this.setState({searchSuggestions: response.data});
+                } else {
+                    this.setState({searchSuggestions: []});
+                }
+            })
+        }
         this.setState(prevState => {
             return {
                 newEquityItem: {
@@ -52,6 +72,7 @@ class NetWorthCalculator extends Component {
 
     // addCashEntryHandler -> adds cash item to state then resets newCashItem
     addCashEntryHandler = () => {
+
         const cashItem = this.state.newCashItem;
         this.setState((prevState) => {
             return {
@@ -68,7 +89,7 @@ class NetWorthCalculator extends Component {
         // get ticker and quantity from newEquityItem object
         // send axios get request to get price. then update state with ticker, quantity
         const { ticker, quantity } = this.state.newEquityItem;
-        axios.get(`https://financialmodelingprep.com/api/v3/quote/${ticker.toUpperCase()}?apikey=7f0b3c8089695e3330c5803459be0c31`)
+        axios.get(`https://financialmodelingprep.com/api/v3/quote/${ticker.toUpperCase()}?apikey=${process.env.REACT_APP_FMP_API_KEY}`)
             .then(response => {
                 // console.log(response);
                 const stockPrice = parseFloat(response.data[0].price).toFixed(2);
@@ -108,33 +129,42 @@ class NetWorthCalculator extends Component {
         totalEquityValue = totalEquityValue * 1.35;
         this.setState({ totalEquityValue: totalEquityValue });
         this.setState({ totalValue: (parseFloat(totalCashValue) + parseFloat(totalEquityValue)).toFixed(2) });
-    
+
         // setting doughnut graph values
-        this.setState({totalDoughnut: [{name: "Cash", value: totalCashValue},{name: "Equities", value: totalEquityValue}]});
-        this.setState({cashDoughnut: allCashItems});
-        this.setState({equityDoughnut: allEquityItems.map(equityItem => ({name: equityItem.ticker, value: equityItem.totalValue}))});
+        this.setState({ totalDoughnut: [{ name: "Cash", value: totalCashValue }, { name: "Equities", value: totalEquityValue }] });
+        this.setState({ cashDoughnut: allCashItems });
+        this.setState({ equityDoughnut: allEquityItems.map(equityItem => ({ name: equityItem.ticker, value: equityItem.totalValue })) });
     }
 
 
 
     render() {
+        const graphs = <Auxiliary>
+            <DoughnutGraph
+                datalist={this.state.totalDoughnut}
+                displayVal={this.state.totalValue}
+                description="Total Net Worth"
+                title="Overview" />
+            <DoughnutGraph
+                datalist={this.state.cashDoughnut}
+                displayVal={this.state.totalCashValue}
+                description="Total Cash Value"
+                title="Cash Items" />
+            <DoughnutGraph
+                datalist={this.state.equityDoughnut}
+                displayVal={this.state.totalEquityValue}
+                description="Total Equity Value"
+                title="Equity Items" />
+        </Auxiliary>
+
         return (<div>
             <div>
-                <DoughnutGraph 
-                    datalist={this.state.totalDoughnut}
-                    displayVal={this.state.totalValue}
-                    description="Total Net Worth"
-                    title="Overview"/>
-                <DoughnutGraph 
-                    datalist={this.state.cashDoughnut}
-                    displayVal={this.state.totalCashValue}
-                    description="Total Cash Value"
-                    title="Cash Items"/>
-                <DoughnutGraph
-                    datalist={this.state.equityDoughnut}
-                    displayVal={this.state.totalEquityValue}
-                    description="Total Equity Value"
-                    title="Equity Items"/>
+                {
+                    this.state.totalDoughnut.length > 0 
+                        ? graphs
+                        : <p>Start adding items to calculate your net worth!</p>
+                }
+
 
                 <div className={classes.nwContainer}>
                     <CashPanel
@@ -154,6 +184,12 @@ class NetWorthCalculator extends Component {
                         clicked={this.addEquityEntryhandler}
                     />
                 </div>
+                { this.state.searchSuggestions.length > 0 ? this.state.searchSuggestions.map(suggestion => {
+                    return <div>
+                    <p>Ticker Symbol: {suggestion.symbol}</p>
+                    <p>Equity Name: {suggestion.name}</p>
+                </div>}) : <p>No matching ticker symbols found</p>
+                }
             </div>
             <button className={classes.calculateBtn} onClick={this.calculateTotalHandler}>Calculate Net Worth</button>
         </div>);

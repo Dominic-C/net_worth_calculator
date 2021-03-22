@@ -1,8 +1,7 @@
 .nwContainer {
     background-color: #EFEEFF;
-    display: inline-block;
-    width: 80%;
-    text-align: center;
+    justify-content: center;
+    display: flex;
 }
 
 .calculateBtn {
@@ -12,7 +11,7 @@
     padding: 15px;
     font-size: 20px;
     border-radius: 10px;
-    margin: 10px;
+    margin: 10px auto;
     cursor: pointer;
 }
 
@@ -23,4 +22,12 @@
 
 .calculateBtn:focus {
     outline: none;
+}
+
+.graphs {
+    text-align: center;
+}
+
+.center {
+    text-align: center;
 }

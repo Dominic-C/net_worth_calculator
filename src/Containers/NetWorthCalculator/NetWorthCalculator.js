@@ -136,10 +136,17 @@ class NetWorthCalculator extends Component {
         this.setState({ equityDoughnut: allEquityItems.map(equityItem => ({ name: equityItem.ticker, value: equityItem.totalValue })) });
     }
 
-
+    autoFillHandler = (ticker) => {
+        this.setState(prevState => { 
+            return {newEquityItem : {
+                ...prevState.newEquityItem,
+                ticker: ticker
+            }, searchSuggestions: []}
+        })
+    }
 
     render() {
-        const graphs = <Auxiliary>
+        const graphs = <div className={classes.center}>
             <DoughnutGraph
                 datalist={this.state.totalDoughnut}
                 displayVal={this.state.totalValue}
@@ -155,16 +162,20 @@ class NetWorthCalculator extends Component {
                 displayVal={this.state.totalEquityValue}
                 description="Total Equity Value"
                 title="Equity Items" />
-        </Auxiliary>
+        </div>
+
+        const welcomeMessage = <div className={classes.center}>
+            <h1>Welcome to the net worth calculator!</h1>
+            <p>Start adding items to calculate your net worth!</p>
+        </div>
 
         return (<div>
             <div>
                 {
                     this.state.totalDoughnut.length > 0 
                         ? graphs
-                        : <p>Start adding items to calculate your net worth!</p>
+                        : welcomeMessage
                 }
-
 
                 <div className={classes.nwContainer}>
                     <CashPanel
@@ -186,12 +197,13 @@ class NetWorthCalculator extends Component {
                 </div>
                 { this.state.searchSuggestions.length > 0 ? this.state.searchSuggestions.map(suggestion => {
                     return <div>
-                    <p>Ticker Symbol: {suggestion.symbol}</p>
-                    <p>Equity Name: {suggestion.name}</p>
+                    <p onClick={this.autoFillHandler.bind(this, suggestion.symbol)}>{suggestion.symbol} - {suggestion.name}</p>
                 </div>}) : <p>No matching ticker symbols found</p>
                 }
             </div>
-            <button className={classes.calculateBtn} onClick={this.calculateTotalHandler}>Calculate Net Worth</button>
+            <div className={classes.center}>
+                <button className={classes.calculateBtn} onClick={this.calculateTotalHandler}>Calculate Net Worth</button>
+            </div>
         </div>);
     }
 }

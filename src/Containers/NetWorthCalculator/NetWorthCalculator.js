@@ -51,14 +51,22 @@ class NetWorthCalculator extends Component {
         const { name, value } = event.target;
         // run axios -> get top 5 results -> set new equity item -> set top 5 results in a state. element that displays top 5 results when input is not empty.
         if (name === "ticker") {
-            axios.get(`https://financialmodelingprep.com/api/v3/search-ticker?query=${value.toUpperCase()}&limit=5&apikey=${process.env.REACT_APP_FMP_API_KEY}`).then(response => {
-                console.log(response);
-                if (response.data.length !== 0) {
-                    this.setState({searchSuggestions: response.data});
+            const reqOne = axios.get(`https://financialmodelingprep.com/api/v3/search-ticker?query=${value.toUpperCase()}&limit=5&exchange=NASDAQ&apikey=${process.env.REACT_APP_FMP_API_KEY}`);
+            const reqTwo = axios.get(`https://financialmodelingprep.com/api/v3/search-ticker?query=${value.toUpperCase()}&limit=5&exchange=NYSE&apikey=${process.env.REACT_APP_FMP_API_KEY}`);
+
+            axios.all([reqOne, reqTwo]).then(axios.spread((...responses) => {
+                let tickersToAppend = [];
+                for (let response of responses) {
+                    if (response.data.length !== 0){
+                        tickersToAppend = tickersToAppend.concat(response.data);
+                    }
+                }
+                if (tickersToAppend.length > 0) {
+                    this.setState({searchSuggestions: tickersToAppend});
                 } else {
                     this.setState({searchSuggestions: []});
                 }
-            })
+            }))
         }
         this.setState(prevState => {
             return {
@@ -146,31 +154,35 @@ class NetWorthCalculator extends Component {
     }
 
     render() {
-        const graphs = <div className={classes.center}>
-            <DoughnutGraph
-                datalist={this.state.totalDoughnut}
-                displayVal={this.state.totalValue}
-                description="Total Net Worth"
-                title="Overview" />
-            <DoughnutGraph
-                datalist={this.state.cashDoughnut}
-                displayVal={this.state.totalCashValue}
-                description="Total Cash Value"
-                title="Cash Items" />
-            <DoughnutGraph
-                datalist={this.state.equityDoughnut}
-                displayVal={this.state.totalEquityValue}
-                description="Total Equity Value"
-                title="Equity Items" />
-        </div>
-
-        const welcomeMessage = <div className={classes.center}>
+        
+        const welcomeMessage = <div>
             <h1>Welcome to the net worth calculator!</h1>
             <p>Start adding items to calculate your net worth!</p>
         </div>
 
+        const graphs = <div >
+            <h1>Your Net Worth is ${this.state.totalValue}!</h1>
+            <p>Here's the breakdown:</p>
+            {this.state.totalValue > 0 ? <DoughnutGraph
+                datalist={this.state.totalDoughnut}
+                displayVal={this.state.totalValue}
+                description="Total Net Worth"
+                title="Overview" /> : null}
+            {this.state.totalCashValue > 0 ? <DoughnutGraph
+                datalist={this.state.cashDoughnut}
+                displayVal={this.state.totalCashValue}
+                description="Total Cash Value"
+                title="Cash Items" /> : null}
+            {this.state.totalEquityValue > 0 ? <DoughnutGraph
+                datalist={this.state.equityDoughnut}
+                displayVal={this.state.totalEquityValue}
+                description="Total Equity Value"
+                title="Equity Items" /> : null}
+        </div>
+
+
         return (<div>
-            <div>
+            <div className={classes.center}>
                 {
                     this.state.totalDoughnut.length > 0 
                         ? graphs

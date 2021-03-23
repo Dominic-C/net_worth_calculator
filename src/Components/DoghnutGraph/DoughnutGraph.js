@@ -1,10 +1,10 @@
 import React from "react";
-import {Doughnut} from 'react-chartjs-2';
+import {Doughnut, defaults} from 'react-chartjs-2';
 import classes from "./DoughnutGraph.module.css";
 
 // takes in labels and data as props
-// [{name, value}]
 const doughnutGraph = (props) => {
+        defaults.global.defaultFontFamily = 'Poppins'; // override chartjs font family
         const labels = props.datalist.map(item => item.name);
         const values = props.datalist.map(item => item.value);
         const data = {
@@ -31,19 +31,21 @@ const doughnutGraph = (props) => {
             ]
         }
         return (<div className={classes.DoughnutContainer}>
+                    <h2>{props.title}</h2>
                     <Doughnut
                             data={data}
                             width={300}
                             height={300}
                             options={{
-                                title:{
-                                display:true,
-                                text:props.title,
-                                fontSize:20
-                                },
+                                // title:{
+                                // display:true,
+                                // text:props.title,
+                                // fontSize:20,
+                                // fontColor: 'black'
+                                // },
                                 legend:{
                                 display:true,
-                                position:'right'
+                                position:'bottom'
                                 },
                                 maintainAspectRatio: true
                             }}

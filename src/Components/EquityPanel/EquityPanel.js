@@ -44,6 +44,8 @@ const equityPanel = (props) => {
         <NewEquityEntry equityInputChangeHandler={props.inputChangeHandler}
             clicked={props.clicked}
             newEquityItem={props.newEquityItem}
+            suggestions={props.suggestions}
+            autofill={props.autofill}
         />
     </div>);
 }

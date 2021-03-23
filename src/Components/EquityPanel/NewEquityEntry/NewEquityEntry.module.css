@@ -1,0 +1,16 @@
+.suggestions {
+    position: absolute;
+}
+
+.suggestion {
+    margin: 0;
+    background-color: white;
+    border: 1px black solid;
+    padding: 0 5px;
+    font-size: 14px;
+}
+
+.suggestion:hover {
+    background-color: dodgerblue;
+    color: white;
+}

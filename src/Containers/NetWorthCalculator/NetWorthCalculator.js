@@ -193,13 +193,10 @@ class NetWorthCalculator extends Component {
                         inputChangeHandler={this.onEquityInputChange}
                         newEquityItem={this.state.newEquityItem}
                         clicked={this.addEquityEntryhandler}
+                        suggestions={this.state.searchSuggestions}
+                        autofill={this.autoFillHandler}
                     />
                 </div>
-                { this.state.searchSuggestions.length > 0 ? this.state.searchSuggestions.map(suggestion => {
-                    return <div>
-                    <p onClick={this.autoFillHandler.bind(this, suggestion.symbol)}>{suggestion.symbol} - {suggestion.name}</p>
-                </div>}) : <p>No matching ticker symbols found</p>
-                }
             </div>
             <div className={classes.center}>
                 <button className={classes.calculateBtn} onClick={this.calculateTotalHandler}>Calculate Net Worth</button>

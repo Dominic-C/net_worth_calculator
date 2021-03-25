@@ -37,12 +37,6 @@ const doughnutGraph = (props) => {
                             width={300}
                             height={300}
                             options={{
-                                // title:{
-                                // display:true,
-                                // text:props.title,
-                                // fontSize:20,
-                                // fontColor: 'black'
-                                // },
                                 legend:{
                                 display:true,
                                 position:'bottom'

@@ -3,6 +3,8 @@
 import React from "react";
 import NewEquityEntry from "./NewEquityEntry/NewEquityEntry";
 import classes from "./EquityPanel.module.css";
+import Spinner from "../UI/Spinner/Spinner"
+import NewEquitySpinner from "../EquityPanel/NewEquitySpinner/NewEquitySpinner"
 
 const equityPanel = (props) => {
     //  equityEntries
@@ -41,6 +43,8 @@ const equityPanel = (props) => {
             </table>
             : null
         }
+            {props.fetching ? <NewEquitySpinner/> : null}
+                    
         <NewEquityEntry equityInputChangeHandler={props.inputChangeHandler}
             clicked={props.clicked}
             newEquityItem={props.newEquityItem}

@@ -1,11 +1,15 @@
 .nwContainer {
     background-color: #EFEEFF;
     justify-content: center;
+    width: fit-content;
+    margin: 0 auto 20px;
+    padding: 10px;
     display: flex;
+    border-radius: 15px;
 }
 
 .calculateBtn {
-    background-color: #594aff;
+    background-color: rgb(89, 74, 255);
     color: white;
     border: none;
     padding: 15px;
@@ -29,5 +33,11 @@
 }
 
 .center {
+    width: 100%;
     text-align: center;
+}
+
+.verticalCenter {
+    position: absolute;
+    top: 30%;
 }

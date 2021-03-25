@@ -3,7 +3,8 @@ import React, { Component } from "react";
 import CashPanel from "../../Components/CashPanel/CashPanel";
 import EquityPanel from "../../Components/EquityPanel/EquityPanel";
 import DoughnutGraph from "../../Components/DoghnutGraph/DoughnutGraph";
-import Auxiliary from "../../hoc/Auxiliary/Auxiliary"
+import Footer from "../../Components/UI/Footer/Footer"
+import Spinner from "../../Components/UI/Spinner/Spinner"
 import classes from "./NetWorthCalculator.module.css";
 
 class NetWorthCalculator extends Component {
@@ -35,7 +36,9 @@ class NetWorthCalculator extends Component {
         totalDoughnut: [],
 
         // state for ticker search
-        searchSuggestions: []
+        searchSuggestions: [],
+
+        fetching: false
 
     }
 
@@ -48,8 +51,8 @@ class NetWorthCalculator extends Component {
     }
 
     onEquityInputChange = (event) => {
-        const { name, value } = event.target;
-        // run axios -> get top 5 results -> set new equity item -> set top 5 results in a state. element that displays top 5 results when input is not empty.
+        let { name, value } = event.target;
+        // disable autocomplete to save API calls
         if (name === "ticker") {
             const reqOne = axios.get(`https://financialmodelingprep.com/api/v3/search-ticker?query=${value.toUpperCase()}&limit=5&exchange=NASDAQ&apikey=${process.env.REACT_APP_FMP_API_KEY}`);
             const reqTwo = axios.get(`https://financialmodelingprep.com/api/v3/search-ticker?query=${value.toUpperCase()}&limit=5&exchange=NYSE&apikey=${process.env.REACT_APP_FMP_API_KEY}`);
@@ -68,6 +71,12 @@ class NetWorthCalculator extends Component {
                 }
             }))
         }
+
+        // auto uppercase
+        if (name === "ticker") {
+            value = value.toUpperCase();
+        }
+
         this.setState(prevState => {
             return {
                 newEquityItem: {
@@ -94,12 +103,15 @@ class NetWorthCalculator extends Component {
     }
 
     addEquityEntryhandler = () => {
+        this.setState({ fetching: true });
+
         // get ticker and quantity from newEquityItem object
         // send axios get request to get price. then update state with ticker, quantity
         const { ticker, quantity } = this.state.newEquityItem;
         axios.get(`https://financialmodelingprep.com/api/v3/quote/${ticker.toUpperCase()}?apikey=${process.env.REACT_APP_FMP_API_KEY}`)
             .then(response => {
                 // console.log(response);
+                this.setState({ fetching: false });
                 const stockPrice = parseFloat(response.data[0].price).toFixed(2);
                 const totalValue = parseFloat(stockPrice * quantity).toFixed(2);
                 this.setState(prevState => {
@@ -145,19 +157,25 @@ class NetWorthCalculator extends Component {
     }
 
     autoFillHandler = (ticker) => {
-        this.setState(prevState => { 
-            return {newEquityItem : {
-                ...prevState.newEquityItem,
-                ticker: ticker
-            }, searchSuggestions: []}
+        this.setState(prevState => {
+            return {
+                newEquityItem: {
+                    ...prevState.newEquityItem,
+                    ticker: ticker
+                }, searchSuggestions: []
+            }
         })
     }
 
     render() {
-        
+
         const welcomeMessage = <div>
             <h1>Welcome to the net worth calculator!</h1>
-            <p>Start adding items to calculate your net worth!</p>
+            {this.state.cashItems.length !== 0 || this.state.equityItems.length !== 0 
+            || this.state.newCashItem.name.length !== 0 || this.state.newCashItem.value.length !== 0
+            || this.state.newEquityItem.ticker.length !== 0 || this.state.newEquityItem.quantity.length !== 0
+            ? <p>Click the "Add" button to register items, then click "Calculate" once all items are added!</p> 
+            : <p>Start adding items to calculate your net worth!</p>}
         </div>
 
         const graphs = <div >
@@ -180,11 +198,15 @@ class NetWorthCalculator extends Component {
                 title="Equity Items" /> : null}
         </div>
 
+        const classList = [classes.center];
+        if (this.state.totalValue === 0) {
+            classList.push(classes.verticalCenter);
+        }
 
         return (<div>
-            <div className={classes.center}>
+            <div className={classList.join(" ")}>
                 {
-                    this.state.totalDoughnut.length > 0 
+                    this.state.totalDoughnut.length > 0
                         ? graphs
                         : welcomeMessage
                 }
@@ -207,10 +229,9 @@ class NetWorthCalculator extends Component {
                         clicked={this.addEquityEntryhandler}
                         suggestions={this.state.searchSuggestions}
                         autofill={this.autoFillHandler}
+                        fetching={this.state.fetching}
                     />
                 </div>
-            </div>
-            <div className={classes.center}>
                 <button className={classes.calculateBtn} onClick={this.calculateTotalHandler}>Calculate Net Worth</button>
             </div>
         </div>);

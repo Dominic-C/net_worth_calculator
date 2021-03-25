@@ -3,8 +3,6 @@ import React, { Component } from "react";
 import CashPanel from "../../Components/CashPanel/CashPanel";
 import EquityPanel from "../../Components/EquityPanel/EquityPanel";
 import DoughnutGraph from "../../Components/DoghnutGraph/DoughnutGraph";
-import Footer from "../../Components/UI/Footer/Footer"
-import Spinner from "../../Components/UI/Spinner/Spinner"
 import classes from "./NetWorthCalculator.module.css";
 
 class NetWorthCalculator extends Component {
@@ -178,7 +176,7 @@ class NetWorthCalculator extends Component {
             : <p>Start adding items to calculate your net worth!</p>}
         </div>
 
-        const graphs = <div >
+        const graphs = <div>
             <h1>Your Net Worth is ${this.state.totalValue}!</h1>
             <p>Here's the breakdown:</p>
             {this.state.totalValue > 0 ? <DoughnutGraph

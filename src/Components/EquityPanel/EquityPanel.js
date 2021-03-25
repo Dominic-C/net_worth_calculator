@@ -3,8 +3,7 @@
 import React from "react";
 import NewEquityEntry from "./NewEquityEntry/NewEquityEntry";
 import classes from "./EquityPanel.module.css";
-import Spinner from "../UI/Spinner/Spinner"
-import NewEquitySpinner from "../EquityPanel/NewEquitySpinner/NewEquitySpinner"
+import NewEquitySpinner from "../EquityPanel/NewEquitySpinner/NewEquitySpinner";
 
 const equityPanel = (props) => {
     //  equityEntries
@@ -24,7 +23,7 @@ const equityPanel = (props) => {
         })
     }
     return (<div className={classes.EquityPanel}>
-        <p className={classes.description}>{props.description}</p>
+        <h3 className={classes.description}>{props.description}</h3>
         {props.equityItems.length > 0 
             ?
             <table className={classes.equityTable}>

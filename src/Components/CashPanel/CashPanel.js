@@ -19,13 +19,13 @@ const cashPanel = (props) => {
         })
     }
     return (<div className={classes.CashPanel}>
-        <p className={classes.description}>{props.description}</p>
+        <h3 className={classes.description}>{props.description}</h3>
         {props.cashItems.length > 0 ?
             <table className={classes.cashTable}>
                 <thead>
                     <tr>
                         <td>Item</td>
-                        <td>Value</td>
+                        <td>Value (SGD)</td>
                     </tr>
                 </thead>
                 <tbody>

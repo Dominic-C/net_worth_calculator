@@ -11,7 +11,6 @@ const equityPanel = (props) => {
     let entries = null;
     if (props.equityItems && props.equityItems.length > 0) {
         entries = props.equityItems.map((item, index) => {
-            // return <EquityEntry equityItem={item} />
             return (
                 <tr key={index}>
                     <td>{item.ticker}</td>

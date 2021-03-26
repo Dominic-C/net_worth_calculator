@@ -108,7 +108,6 @@ class NetWorthCalculator extends Component {
         const { ticker, quantity } = this.state.newEquityItem;
         axios.get(`https://financialmodelingprep.com/api/v3/quote/${ticker.toUpperCase()}?apikey=${process.env.REACT_APP_FMP_API_KEY}`)
             .then(response => {
-                // console.log(response);
                 this.setState({ fetching: false });
                 const stockPrice = parseFloat(response.data[0].price).toFixed(2);
                 const totalValue = parseFloat(stockPrice * quantity).toFixed(2);
@@ -196,6 +195,7 @@ class NetWorthCalculator extends Component {
                 title="Equity Items" /> : null}
         </div>
 
+        // make sure welcome page is centered vertically
         const classList = [classes.center];
         if (this.state.totalValue === 0) {
             classList.push(classes.verticalCenter);

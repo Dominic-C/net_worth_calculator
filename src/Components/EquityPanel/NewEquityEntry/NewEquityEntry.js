@@ -1,6 +1,7 @@
 import React from "react";
 import classes from "./NewEquityEntry.module.css";
 import EntryField from "../../UI/EntryField/EntryField";
+import AddButton from "../../UI/Buttons/AddButton/AddButton"
 
 const newEquityEntry = (props) => {
 
@@ -11,7 +12,7 @@ const newEquityEntry = (props) => {
         <EntryField autoComplete="off" name="ticker" placeholder="Ticker" onChange={props.equityInputChangeHandler} value={props.newEquityItem.ticker}/>
         {props.suggestions.length > 0 ? suggestions : null}
         <EntryField autoComplete="off" name="quantity" placeholder="Quantity" onChange={props.equityInputChangeHandler} value={props.newEquityItem.quantity} type="number"/>
-        <button onClick={props.clicked}>Add</button>
+        <AddButton onClick={props.clicked}/>
     </div>);
 } 
 

@@ -1,11 +1,12 @@
-// TODO: reference cashPanel
-// create handlers in NetWorthCalc
 import React from "react";
+import Panel from "../UI/Panel/Panel";
+import Table from "../UI/Table/Table";
 import NewEquityEntry from "./NewEquityEntry/NewEquityEntry";
-import classes from "./EquityPanel.module.css";
 import NewEquitySpinner from "../EquityPanel/NewEquitySpinner/NewEquitySpinner";
 
 const equityPanel = (props) => {
+
+    const headerTitles = ["Ticker", "Quantity", "Price (USD)", "Value (USD)", "Value (SGD)"];
     //  equityEntries
     let entries = null;
     if (props.equityItems && props.equityItems.length > 0) {
@@ -16,41 +17,27 @@ const equityPanel = (props) => {
                     <td>{item.ticker}</td>
                     <td>{item.quantity}</td>
                     <td>{item.stockPrice}</td>
-                    <td>{item.totalValue}</td> 
-                    <td>{(item.totalValue * 1.35).toFixed(2)}</td> 
+                    <td>{item.totalValue}</td>
+                    <td>{(item.totalValue * 1.35).toFixed(2)}</td>
                 </tr>
             );
         })
     }
-    return (<div className={classes.EquityPanel}>
-        <h3 className={classes.description}>{props.description}</h3>
-        {props.equityItems.length > 0 
-            ?
-            <table className={classes.equityTable}>
-                <thead>
-                    <tr>
-                        <td>Ticker</td>
-                        <td>Quantity</td>
-                        <td>Stock Price (USD)</td>
-                        <td>Value (USD)</td>
-                        <td>Value (SGD)</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {entries}
-                </tbody>
-            </table>
-            : null
-        }
-            {props.fetching ? <NewEquitySpinner/> : null}
-                    
-        <NewEquityEntry equityInputChangeHandler={props.inputChangeHandler}
-            clicked={props.clicked}
-            newEquityItem={props.newEquityItem}
-            suggestions={props.suggestions}
-            autofill={props.autofill}
-        />
-    </div>);
+    return (
+        <Panel description={props.description}>
+            {props.equityItems.length > 0
+                ?
+                <Table tableHeaders={headerTitles} tableEntries={entries} />
+                : null
+            }
+            {props.fetching ? <NewEquitySpinner /> : null}
+            <NewEquityEntry
+                equityInputChangeHandler={props.inputChangeHandler}
+                clicked={props.clicked}
+                newEquityItem={props.newEquityItem}
+                suggestions={props.suggestions}
+                autofill={props.autofill} />
+        </Panel>);
 }
 
 export default equityPanel;

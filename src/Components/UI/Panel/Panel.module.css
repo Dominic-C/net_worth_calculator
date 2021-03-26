@@ -1,0 +1,13 @@
+.panel {
+    /* display: inline-block; */
+    padding: 25px;
+    background-color: #E4E2FF;
+    margin: 10px;
+    border-radius: 15px;
+    align-items: stretch;
+    text-align: left;
+}
+
+.description {
+    margin: 0;
+}

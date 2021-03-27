@@ -36,8 +36,8 @@ class NetWorthCalculator extends Component {
         // state for ticker search
         searchSuggestions: [],
 
-        fetching: false
-
+        fetching: false,
+        loadingSuggestions: false,
     }
 
     // onInputChange -> function that updates newCashItem state
@@ -49,25 +49,37 @@ class NetWorthCalculator extends Component {
     }
 
     onEquityInputChange = (event) => {
+        // set loading state = true
         let { name, value } = event.target;
         // disable autocomplete to save API calls
+        this.setState({loadingSuggestions: true});
         if (name === "ticker") {
-            const reqOne = axios.get(`https://financialmodelingprep.com/api/v3/search-ticker?query=${value.toUpperCase()}&limit=5&exchange=NASDAQ&apikey=${process.env.REACT_APP_FMP_API_KEY}`);
-            const reqTwo = axios.get(`https://financialmodelingprep.com/api/v3/search-ticker?query=${value.toUpperCase()}&limit=5&exchange=NYSE&apikey=${process.env.REACT_APP_FMP_API_KEY}`);
-
-            axios.all([reqOne, reqTwo]).then(axios.spread((...responses) => {
-                let tickersToAppend = [];
-                for (let response of responses) {
-                    if (response.data.length !== 0){
-                        tickersToAppend = tickersToAppend.concat(response.data);
+            if (value === "") {
+                this.setState({searchSuggestions: []});
+                this.setState({loadingSuggestions: false});
+            } else {
+                const reqOne = axios.get(`https://financialmodelingprep.com/api/v3/search-ticker?query=${value.toUpperCase()}&limit=5&exchange=NASDAQ&apikey=${process.env.REACT_APP_FMP_API_KEY}`);
+                const reqTwo = axios.get(`https://financialmodelingprep.com/api/v3/search-ticker?query=${value.toUpperCase()}&limit=5&exchange=NYSE&apikey=${process.env.REACT_APP_FMP_API_KEY}`);
+    
+                axios.all([reqOne, reqTwo]).then(axios.spread((...responses) => {
+                    let tickersToAppend = [];
+                    for (let response of responses) {
+                        if (response.data.length !== 0){
+                            tickersToAppend = tickersToAppend.concat(response.data);
+                        }
                     }
-                }
-                if (tickersToAppend.length > 0) {
-                    this.setState({searchSuggestions: tickersToAppend});
-                } else {
-                    this.setState({searchSuggestions: []});
-                }
-            }))
+                    if (tickersToAppend.length > 0) {
+                        this.setState({searchSuggestions: tickersToAppend});
+                        this.setState({loadingSuggestions: false});
+
+                    } else {
+                        this.setState({searchSuggestions: []});
+                        this.setState({loadingSuggestions: false});
+
+                    }
+                }))
+            }
+
         }
 
         // auto uppercase
@@ -228,6 +240,7 @@ class NetWorthCalculator extends Component {
                         suggestions={this.state.searchSuggestions}
                         autofill={this.autoFillHandler}
                         fetching={this.state.fetching}
+                        loadingSuggestions={this.state.loadingSuggestions}
                     />
                 </div>
                 <button className={classes.calculateBtn} onClick={this.calculateTotalHandler}>Calculate Net Worth</button>

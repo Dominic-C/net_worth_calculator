@@ -35,7 +35,8 @@ const equityPanel = (props) => {
                 clicked={props.clicked}
                 newEquityItem={props.newEquityItem}
                 suggestions={props.suggestions}
-                autofill={props.autofill} />
+                autofill={props.autofill}
+                loadingSuggestions={props.loadingSuggestions} />
         </Panel>);
 }
 
